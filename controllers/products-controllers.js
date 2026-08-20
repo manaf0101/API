@@ -1,69 +1,166 @@
+const User = require('../models/users');
 
-const User = require('../models/users')
 
 
-//check user email
-const checkUserEmail = async (req, res) => {
+// CHECK USERNAME
+const checkUsername = async (req, res) => {
+
     try {
-        const { userEmail } = req.query;
-        
-        if (!userEmail) {
-            return res.status(400).json({ message: "Email is required" });
-        }       
-        
-        const user = await User.findOne({ userEmail });
 
-        if (user) {
-            return res.status(200).json({ exists: true, message: "Email already exists" });
+        const { username } = req.query;
+
+        if (!username) {
+
+            return res.status(400).json({
+                message: "Username is required"
+            });
+
         }
 
-        res.status(200).json({ exists: false, message: "Email is available" });
+        const user = await User.findOne({
+            username: username
+        });
+
+        res.status(200).json({
+
+            exists: !!user,
+
+            message: user
+                ? "Username already exists"
+                : "Username is available"
+
+        });
+
     } catch (error) {
-        res.status(500).json({ message: "Something went wrong", error });
-    }
-}
-//check user email
 
+        console.log("Error checking username:", error);
 
-//get
-const getUsers = async (req, res) => {
-    try {
-        const users = await Products.find();
-
-        res.status(200).json(users);
-    } catch (error) {
         res.status(500).json({
             message: "Something went wrong"
         });
+
     }
+
 };
-//get
+// CHECK USERNAME
 
 
 
+// CHECK EMAIL
+const checkUserEmail = async (req, res) => {
 
+    try {
 
-// پست 
-const postNewUser = async (req, res) => {  
-    const { userName } = req.body;  
+        const { email } = req.query;
 
-    const newUser = new User({  
-       userName : userName
-    });  
+        if (!email) {
 
-    try {  
-        await newUser.save(); // Save the new product to DB  
-        res.status(201).json({ message: 'User created-manafgrocery', user: newUser });  
-    } catch (error) {  
-        res.status(500).json({ message: 'Creating User failed', error });  
-    }  
+            return res.status(400).json({
+                message: "Email is required"
+            });
+
+        }
+
+        const user = await User.findOne({
+            userEmail: email
+        });
+
+        if (user) {
+
+            return res.status(200).json({
+                exists: true,
+                message: "Email already exists"
+            });
+
+        }
+
+        res.status(200).json({
+            exists: false,
+            message: "Email is available"
+        });
+
+    } catch (error) {
+
+        console.log("Error checking email:", error);
+
+        res.status(500).json({
+            message: "Something went wrong"
+        });
+
+    }
+
 };
-// پست 
+// CHECK EMAIL
 
+
+
+// GET USERS
+const getUsers = async (req, res) => {
+
+    try {
+
+        const users = await User.find();
+
+        res.status(200).json(users);
+
+    } catch (error) {
+
+        res.status(500).json({
+            message: "Something went wrong"
+        });
+
+    }
+
+};
+// GET USERS
+
+
+
+
+// POST USER
+const postNewUser = async (req, res) => {
+
+    const {
+        userEmail,
+        username,
+        password,
+        userId
+    } = req.body;
+
+    try {
+
+        const newUser = new User({
+
+            userEmail,
+            username,
+            password,
+            userId
+
+        });
+
+        await newUser.save();
+
+        res.status(201).json(newUser);
+
+    } catch (error) {
+
+        console.log("Error creating user:", error);
+
+        res.status(500).json({
+            message: "Something went wrong"
+        });
+
+    }
+
+};
+// POST USER
 
 
 module.exports = {
+
     postNewUser,
     checkUserEmail,
-    getUsers
+    getUsers,
+    checkUsername
+
 };

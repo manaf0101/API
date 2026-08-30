@@ -1,4 +1,5 @@
 const express =  require('express')
+const upload = require('../middleware/upload')
 
 const router = express.Router()
 
@@ -15,5 +16,8 @@ router.get('/profile/:userId' ,  productControllers.getProfile);
 router.put('/profile/:userId', productControllers.updateProfile)
 router.post('/check-password', productControllers.checkPassword)
 router.put('/change-password/:userId', productControllers.changePassword)
+
+// آپلود عکس پروفایل
+router.post('/upload-profile-image/:userId', upload.single('profileImage'), productControllers.uploadProfileImage)
 
 module.exports = router

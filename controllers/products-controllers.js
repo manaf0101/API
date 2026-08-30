@@ -5,6 +5,40 @@ const bcrypt = require('bcrypt');
 const User = require('../models/users');
 
 
+// UPLOAD PROFILE IMAGE
+const uploadProfileImage = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        if (!req.file) {
+            return res.status(400).json({ message: "هیچ فایلی ارسال نشد" });
+        }
+
+        // مسیر نسبی که در دیتابیس ذخیره می‌شود
+        const imagePath = `/uploads/profile-images/${req.file.filename}`;
+
+        const updatedUser = await User.findOneAndUpdate(
+            { userId: userId },
+            { userProfileImage: imagePath },
+            { new: true }
+        ).select('-password');
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({
+            message: "عکس با موفقیت آپلود شد",
+            userProfileImage: imagePath
+        });
+
+    } catch (error) {
+        console.log("Error uploading profile image:", error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};
+// UPLOAD PROFILE IMAGE
+
 // UPDATE PROFILE
 const updateProfile = async (req, res) => {
     try {
@@ -320,4 +354,5 @@ module.exports = {
     updateProfile,
     checkPassword,
     changePassword,
+     uploadProfileImage ,
 };

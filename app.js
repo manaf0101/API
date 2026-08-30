@@ -1,6 +1,7 @@
 const express =  require('express')
 const mongoose =  require('mongoose')
 const cors = require('cors')
+const path = require('path')
 
  const productRoutes =  require('./routes/product-routes')
 
@@ -9,6 +10,9 @@ const app =  express()
 
 app.use(express.json())
 app.use(cors())
+
+// دسترسی عمومی به فایل‌های آپلودشده (عکس پروفایل و غیره)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 
 

@@ -3,6 +3,109 @@ const bcrypt = require('bcrypt');
 // برای ستاره دار کردن رمز عبور از bcrypt استفاده می‌کنیم وبه این صورت کار میکند که رمز عبور را هش می‌کند و در دیتابیس ذخیره می‌کند. هنگام ورود کاربر، رمز عبور وارد شده با رمز عبور هش شده مقایسه می‌شود تا صحت آن بررسی شود.
 
 const User = require('../models/users');
+const Order = require('../models/order');
+
+
+// GET ORDERS SUMMARY (تعداد سفارش‌ها در هر دسته)
+const getOrdersSummary = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        // هر چهار شمارش به‌صورت همزمان (parallel) اجرا می‌شوند
+        const [current, delivered, returned, canceled] = await Promise.all([
+            Order.countDocuments({ userId, status: 'current' }),
+            Order.countDocuments({ userId, status: 'delivered' }),
+            Order.countDocuments({ userId, status: 'returned' }),
+            Order.countDocuments({ userId, status: 'canceled' }),
+        ]);
+
+        res.status(200).json({ current, delivered, returned, canceled });
+
+    } catch (error) {
+        console.log("Error getting orders summary:", error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};
+// GET ORDERS SUMMARY
+
+// GET DELIVERED ORDERS
+const getDeliveredOrders = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const orders = await Order.find({
+            userId: userId,
+            status: 'delivered'
+        }).sort({ orderDate: -1 });
+
+        res.status(200).json(orders);
+
+    } catch (error) {
+        console.log("Error getting delivered orders:", error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};
+// GET DELIVERED ORDERS
+
+
+// GET RETURNED ORDERS
+const getReturnedOrders = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const orders = await Order.find({
+            userId: userId,
+            status: 'returned'
+        }).sort({ orderDate: -1 });
+
+        res.status(200).json(orders);
+
+    } catch (error) {
+        console.log("Error getting returned orders:", error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};
+// GET RETURNED ORDERS
+
+
+// GET CANCELED ORDERS
+const getCanceledOrders = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const orders = await Order.find({
+            userId: userId,
+            status: 'canceled'
+        }).sort({ orderDate: -1 });
+
+        res.status(200).json(orders);
+
+    } catch (error) {
+        console.log("Error getting canceled orders:", error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};
+// GET CANCELED ORDERS
+
+
+// GET CURRENT ORDERS
+const getCurrentOrders = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const orders = await Order.find({
+            userId: userId,
+            status: 'current'
+        }).sort({ orderDate: -1 });
+
+        res.status(200).json(orders);
+
+    } catch (error) {
+        console.log("Error getting current orders:", error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};
+// GET CURRENT ORDERS
 
 
 // UPLOAD PROFILE IMAGE
@@ -354,5 +457,10 @@ module.exports = {
     updateProfile,
     checkPassword,
     changePassword,
-     uploadProfileImage ,
+    uploadProfileImage ,
+    getCurrentOrders , 
+    getDeliveredOrders ,
+    getReturnedOrders ,
+    getCanceledOrders ,
+    getOrdersSummary,
 };

@@ -4,6 +4,7 @@ const cors = require('cors')
 const path = require('path')
 
  const productRoutes =  require('./routes/product-routes')
+ const storeRoutes = require('./routes/store-routes')
 
 const app =  express()
 
@@ -17,6 +18,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 
 app.use('/api' , productRoutes)
+app.use('/api', storeRoutes)
 
 
 

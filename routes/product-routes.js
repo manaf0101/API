@@ -1,9 +1,11 @@
 const express =  require('express')
 const upload = require('../middleware/upload')
 
+
+
 const router = express.Router()
 
-const productControllers =  require('../controllers/products-controllers')
+const productControllers =  require('../controllers/user-controllers')
 
 
 router.post('/add-users' , productControllers.postNewUser)
@@ -24,5 +26,8 @@ router.get('/orders/summary/:userId', productControllers.getOrdersSummary)
 
 // آپلود عکس پروفایل
 router.post('/upload-profile-image/:userId', upload.single('profileImage'), productControllers.uploadProfileImage)
+
+
+
 
 module.exports = router

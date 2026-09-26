@@ -1,5 +1,3 @@
-// برای بخش  MineMarket.tsx
-
 const mongoose = require("mongoose");
 
 const storeSchema = new mongoose.Schema({
@@ -29,6 +27,22 @@ const storeSchema = new mongoose.Schema({
 
     welcomeMessage: {
         type: String
+    },
+
+    contactInfo: {
+        phone1: {
+            type: String,
+            required: true
+        },
+        phone2: {
+            type: String
+        },
+        email: {
+            type: String
+        },
+        address: {
+            type: String
+        }
     }
 
 }, { timestamps: true });

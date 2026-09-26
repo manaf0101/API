@@ -1,5 +1,54 @@
 const Store = require('../models/store');
 
+
+// GET STORE (دریافت اطلاعات فروشگاه بر اساس userId)
+const getStore = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const store = await Store.findOne({ userId });
+
+        // اگر فروشگاهی وجود نداشت (فروشنده‌ی جدید است)، یک آبجکت خالی برمی‌گردانیم
+        // تا loader سمت فرانت با خطا مواجه نشود
+        res.status(200).json(store || {});
+
+    } catch (error) {
+        console.log("Error getting store:", error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};
+
+
+// UPSERT STORE (ایجاد یا به‌روزرسانی اطلاعات فروشگاه)
+const upsertStore = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { storeName, sellerID, username, welcomeMessage, contactInfo } = req.body;
+
+        if (!storeName || storeName.trim() === '') {
+            return res.status(400).json({ message: "نام فروشگاه الزامی است" });
+        }
+        if (!username || username.trim() === '') {
+            return res.status(400).json({ message: "نام کاربری الزامی است" });
+        }
+
+        const updatedStore = await Store.findOneAndUpdate(
+            { userId },
+            { userId, storeName, sellerID, username, welcomeMessage, contactInfo },
+            { new: true, upsert: true, runValidators: true }
+        );
+
+        res.status(200).json({ success: true, message: "اطلاعات فروشگاه با موفقیت ثبت شد", store: updatedStore });
+
+    } catch (error) {
+        console.log("Error upserting store:", error);
+        res.status(500).json({ success: false, message: "خطایی رخ داد، لطفاً دوباره تلاش کنید" });
+    }
+};
+
+
+
+
+
 // تولید یک کد ۶ رقمی یکتا برای sellerID
 const generateSellerId = async (req, res) => {
     try {
@@ -47,4 +96,6 @@ const checkSellerUsername = async (req, res) => {
 module.exports = {
     generateSellerId,
     checkSellerUsername,
+    getStore,
+    upsertStore,
 };

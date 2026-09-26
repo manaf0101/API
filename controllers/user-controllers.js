@@ -5,6 +5,15 @@ const bcrypt = require('bcrypt');
 const User = require('../models/users');
 const Order = require('../models/order');
 
+// فقط برای این قسمت ایمپورتش کرده ام : Get Users which they have store
+const Store = require('../models/store');
+const store = require('../models/store');
+const { set } = require('mongoose');
+// فقط برای این قسمت ایمپورتش کرده ام : Get Users which they have store
+
+
+
+
 
 // GET ORDERS SUMMARY (تعداد سفارش‌ها در هر دسته)
 const getOrdersSummary = async (req, res) => {
@@ -401,7 +410,38 @@ const getUsers = async (req, res) => {
 };
 // GET USERS
 
+// Get Users which they have store
+const getUsersWithStore = async (req, res) => {
+    try {
+        const [users, stores] = await Promise.all([
+            User.find().select('-password'),
+            Store.find().sort({ createdAt: 1 }) // قدیمی‌ترین فروشگاه اول
+        ]);
 
+        // نگاشت سریع از userId به اطلاعات کاربر، برای جستجوی بدون حلقه‌ی تودرتو
+        const userMap = new Map(users.map((user) => [user.userId, user]));
+
+        // چون stores از قبل بر اساس createdAt مرتب شده، خروجی نهایی هم به همان ترتیب خواهد بود
+        const sellersWithProfile = stores
+            .filter((store) => userMap.has(store.userId))
+            .map((store) => ({
+                storeId: store._id,
+                storeName: store.storeName,
+                sellerID: store.sellerID,
+                storeCreatedAt: store.createdAt,
+                userId: store.userId,
+                username: userMap.get(store.userId).username,
+                userProfileImage: userMap.get(store.userId).userProfileImage,
+            }));
+
+        res.status(200).json(sellersWithProfile);
+
+    } catch (error) {
+        console.log("Error getting users with store:", error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};
+// Get Users which they have store
 
 
 // POST USER
@@ -463,4 +503,5 @@ module.exports = {
     getReturnedOrders ,
     getCanceledOrders ,
     getOrdersSummary,
+    getUsersWithStore ,
 };

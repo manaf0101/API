@@ -3,8 +3,9 @@ const mongoose =  require('mongoose')
 const cors = require('cors')
 const path = require('path')
 
- const productRoutes =  require('./routes/product-routes')
+ const userRoutes =  require('./routes/user-routes')
  const storeRoutes = require('./routes/store-routes')
+ const storeProductsRoutes = require('./routes/storeProducts-routes')
 
 const app =  express()
 
@@ -17,8 +18,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 
 
-app.use('/api' , productRoutes)
+app.use('/api' , userRoutes)
 app.use('/api', storeRoutes)
+app.use('/api', storeProductsRoutes)
 
 
 

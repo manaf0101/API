@@ -22,7 +22,7 @@ const getOrdersSummary = async (req, res) => {
 
         // هر چهار شمارش به‌صورت همزمان (parallel) اجرا می‌شوند
         const [current, delivered, returned, canceled] = await Promise.all([
-            Order.countDocuments({ userId, status: 'current' }),
+            Order.countDocuments({ userId, status: 'current' , isCart: { $ne: true } }),
             Order.countDocuments({ userId, status: 'delivered' }),
             Order.countDocuments({ userId, status: 'returned' }),
             Order.countDocuments({ userId, status: 'canceled' }),
@@ -104,7 +104,8 @@ const getCurrentOrders = async (req, res) => {
 
         const orders = await Order.find({
             userId: userId,
-            status: 'current'
+            status: 'current' ,
+            isCart: { $ne: true } 
         }).sort({ orderDate: -1 });
 
         res.status(200).json(orders);

@@ -6,6 +6,7 @@ const path = require('path')
  const userRoutes =  require('./routes/user-routes')
  const storeRoutes = require('./routes/store-routes')
  const storeProductsRoutes = require('./routes/storeProducts-routes')
+ const cartRoutes = require('./routes/cart-routes')
 
 const app =  express()
 
@@ -21,6 +22,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use('/api' , userRoutes)
 app.use('/api', storeRoutes)
 app.use('/api', storeProductsRoutes)
+app.use('/api', cartRoutes)
 
 
 

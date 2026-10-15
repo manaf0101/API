@@ -9,6 +9,11 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
 
+    // شناسه‌ی فروشنده‌ی صاحب این محصول؛ برای پیدا کردن «سفارش‌های دریافتی» هر فروشنده لازم است
+    sellerId: {
+        type: String
+    },
+
     orderCode: {
         type: String,
         required: true
@@ -76,11 +81,22 @@ const orderSchema = new mongoose.Schema({
         type: Number
     },
 
+    // اگه خریدار خودش کد تخفیف داشت، مجموع قیمت تخفیف‌خورده (با کد تخفیف خریدار)
+    finalDiscountedTotalPrice: {
+        type: Number
+    },
+
     // مشخص می‌کنه این سند فقط برای سبد خریده، نه یه سفارش واقعی ثبت‌شده
     isCart: {
         type: Boolean,
         default: false
-    }
+    },
+
+    // نشان می‌دهد این سفارش از مسیر «سبد خرید» ساخته شده یا نه؛ بر خلاف isCart، این فیلد بعد از پرداخت هم تغییر نمی‌کند
+    wasCart: {
+        type: Boolean,
+        default: false
+    },
 
 }, { timestamps: true });;//  این گزینه به Mongoose می‌گوید که برای این مدل، دو فیلد خودکار اضافه کند:
 // createdAt: زمان ساخت رکورد

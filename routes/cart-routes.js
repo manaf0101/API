@@ -8,6 +8,10 @@ router.get('/cart/count/:userId', cartControllers.getCartCount);
 
 router.post('/cart/:userId', cartControllers.addToCart);
 router.get('/cart/:userId', cartControllers.getCart);
-router.delete('/cart/:userId/:orderId', cartControllers.removeFromCart);
+router.delete('/cart/:userId/:productId', cartControllers.removeFromCart);
+router.put('/cart/pay/:userId/:productId', cartControllers.payForCartProduct);
+// برای سفارشات دریافتی 
+router.get('/received-orders/count/:sellerId', cartControllers.getReceivedOrdersCount);
+router.get('/received-orders/:sellerId', cartControllers.getReceivedOrders);
 
 module.exports = router;

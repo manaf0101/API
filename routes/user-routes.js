@@ -24,7 +24,7 @@ router.get('/orders/current/:userId', userControllers.getCurrentOrders)
 router.get('/orders/delivered/:userId', userControllers.getDeliveredOrders)
 router.get('/orders/returned/:userId', userControllers.getReturnedOrders)
 router.get('/orders/canceled/:userId', userControllers.getCanceledOrders)
-router.get('/orders/summary/:userId', userControllers.getOrdersSummary)
+router.get('/orders/summary/:userId', userControllers.getOrdersSummary) 
 
 // آپلود عکس پروفایل
 router.post('/upload-profile-image/:userId', upload.single('profileImage'), userControllers.uploadProfileImage)

@@ -16,13 +16,13 @@ const { set } = require('mongoose');
 
 
 // GET ORDERS SUMMARY (تعداد سفارش‌ها در هر دسته)
-const getOrdersSummary = async (req, res) => {
+const getOrdersSummary = async (req, res) => { 
     try {
         const { userId } = req.params;
 
         // هر چهار شمارش به‌صورت همزمان (parallel) اجرا می‌شوند
         const [current, delivered, returned, canceled] = await Promise.all([
-            Order.countDocuments({ userId, status: 'current' , isCart: { $ne: true } }),
+            Order.countDocuments({ userId, status: 'current' , isCart: {$ne: true } }),
             Order.countDocuments({ userId, status: 'delivered' }),
             Order.countDocuments({ userId, status: 'returned' }),
             Order.countDocuments({ userId, status: 'canceled' }),
